@@ -1,1 +1,1 @@
-web: ./fpm serve --download-base-url https://raw.githubusercontent.com/AbrarNitk/abrark/main/
+web: ./mfpm serve --download-base-url https://raw.githubusercontent.com/AbrarNitk/abrark/main/
