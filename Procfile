@@ -1,0 +1,1 @@
+web: ./fpm --download-base-url https://raw.githubusercontent.com/AbrarNitk/abrark/main/
