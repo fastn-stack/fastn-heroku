@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # This script should be run via curl:
 # sh -c "$(curl -fsSL https://fpm.dev/install.sh)"
@@ -75,17 +75,6 @@ setup() {
         mv fpm_linux_musl_x86_64.d "fpm.d"
     fi
     chmod +x "fpm"*
-    
-
-    if ! [[ $DESTINATION_PATH == "/usr/local/bin" ]]; then 
-        cat <<EOF
-Unable to create a binary link for your system. Please add the following to your .bashrc/.zshrc file
-
-${FMT_GREEN}PATH="\$PATH:${DESTINATION_PATH}"${FMT_RESET}
-
-and reload the configuration/restart the terminal session
-EOF
-    fi
 }
 
 main() {
