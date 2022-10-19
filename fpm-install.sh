@@ -63,14 +63,14 @@ setup() {
     fi
 
     if [[ $CONTROLLER ]]; then 
-        curl -s $URL | grep ".*\/releases\/download\/.*\/fpm_controller_linux.*" | head -2 | cut -d : -f 2,3 | tee /dev/tty | xargs -I % curl -O -J -L %
+        curl -L $URL | grep ".*\/releases\/download\/.*\/fpm_controller_linux.*" | head -2 | cut -d : -f 2,3 | tee /dev/tty | xargs -I % curl -O -J -L %
         mv fpm_controller_linux_musl_x86_64 "fpm"
         mv fpm_controller_linux_musl_x86_64.d "fpm.d"
     elif [[ "$OSTYPE" == "darwin"* ]]; then
-        curl -s $URL | grep ".*\/releases\/download\/.*\/fpm_macos.*" | head -1 | cut -d : -f 2,3 | tee /dev/tty | xargs -I % curl -O -J -L %
+        curl -L $URL | grep ".*\/releases\/download\/.*\/fpm_macos.*" | head -1 | cut -d : -f 2,3 | tee /dev/tty | xargs -I % curl -O -J -L %
         mv fpm_macos_x86_64 "fpm"
     else
-        curl -s $URL | grep ".*\/releases\/download\/.*\/fpm_linux.*" | head -2 | cut -d : -f 2,3 | tee /dev/tty | xargs -I % curl -O -J -L %
+        curl -L $URL | grep ".*\/releases\/download\/.*\/fpm_linux.*" | head -2 | cut -d : -f 2,3 | tee /dev/tty | xargs -I % curl -O -J -L %
         mv fpm_linux_musl_x86_64 "fpm"
         mv fpm_linux_musl_x86_64.d "fpm.d"
     fi
