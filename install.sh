@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # This script should be run via curl:
 # sh -c "$(curl -fsSL https://fpm.dev/install.sh)"
