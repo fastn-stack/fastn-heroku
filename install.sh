@@ -1,9 +1,9 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 # This script should be run via curl:
 # sh -c "$(curl -fsSL https://fpm.dev/install.sh)"
 # or via wget
-# sh -c "$(wget -qO- https://fpm.dev/install.sh)"
+# sh -c "$(wget -qO- https://fastn.dev/install.sh)"
 
 # The [ -t 1 ] check only works when the function is not called from
 # a subshell (like in `$(...)` or `(...)`, so this hack redefines the
@@ -55,26 +55,46 @@ setup() {
     done
 
     if [[ $PRE_RELEASE ]]; then
-        URL="https://api.github.com/repos/fifthtry/fpm/releases"
+        URL="https://api.github.com/repos/ftd-lang/fastn/releases"
         echo "Downloading the latest pre-release binaries"
     else
-        URL="https://api.github.com/repos/fifthtry/fpm/releases/latest"
+        URL="https://api.github.com/repos/ftd-lang/fastn/releases/latest"
         echo "Downloading the latest production ready binaries"
     fi
 
-    if [[ $CONTROLLER ]]; then 
-        curl -L $URL | grep ".*\/releases\/download\/.*\/fpm_controller_linux.*" | head -2 | cut -d : -f 2,3 | tee /dev/tty | xargs -I % curl -O -J -L %
-        mv fpm_controller_linux_musl_x86_64 "fpm"
-        mv fpm_controller_linux_musl_x86_64.d "fpm.d"
-    elif [[ "$OSTYPE" == "darwin"* ]]; then
-        curl -L $URL | grep ".*\/releases\/download\/.*\/fpm_macos.*" | head -1 | cut -d : -f 2,3 | tee /dev/tty | xargs -I % curl -O -J -L %
-        mv fpm_macos_x86_64 "fpm"
+    DESTINATION_PATH="/usr/local/bin"
+
+    if [ -d "$DESTINATION_PATH" ]; then
+        DESTINATION_PATH=$DESTINATION_PATH
     else
-        curl -L $URL | grep ".*\/releases\/download\/.*\/fpm_linux.*" | head -2 | cut -d : -f 2,3 | tee /dev/tty | xargs -I % curl -O -J -L %
-        mv fpm_linux_musl_x86_64 "fpm"
-        mv fpm_linux_musl_x86_64.d "fpm.d"
+        DESTINATION_PATH="${HOME}/.fastn/bin"
+        mkdir -p $DESTINATION_PATH
     fi
-    chmod +x "fpm"*
+
+    if [[ $CONTROLLER ]]; then 
+        curl -s $URL | grep ".*\/releases\/download\/.*\/fastn_controller_linux.*" | head -2 | cut -d : -f 2,3 | tee /dev/tty | xargs -I % curl -O -J -L %
+        mv fastn_controller_linux_musl_x86_64 "${DESTINATION_PATH}/fastn"
+        mv fastn_controller_linux_musl_x86_64.d "${DESTINATION_PATH}/fastn.d"
+    elif [[ "$OSTYPE" == "darwin"* ]]; then
+        curl -s $URL | grep ".*\/releases\/download\/.*\/fastn_macos.*" | head -1 | cut -d : -f 2,3 | tee /dev/tty | xargs -I % curl -O -J -L %
+        mv fastn_macos_x86_64 "${DESTINATION_PATH}/fastn"
+    else
+        curl -s $URL | grep ".*\/releases\/download\/.*\/fastn_linux.*" | head -2 | cut -d : -f 2,3 | tee /dev/tty | xargs -I % curl -O -J -L %
+        mv fastn_linux_musl_x86_64 "${DESTINATION_PATH}/fastn"
+        mv fastn_linux_musl_x86_64.d "${DESTINATION_PATH}/fastn.d"
+    fi
+    chmod +x "${DESTINATION_PATH}/fastn"*
+    
+
+    if ! [[ $DESTINATION_PATH == "/usr/local/bin" ]]; then 
+        cat <<EOF
+Unable to create a binary link for your system. Please add the following to your .bashrc/.zshrc file
+
+${FMT_GREEN}PATH="\$PATH:${DESTINATION_PATH}"${FMT_RESET}
+
+and reload the configuration/restart the terminal session
+EOF
+    fi
 }
 
 main() {
